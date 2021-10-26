@@ -91,10 +91,6 @@ export default class HierarchicalBrowser extends HTMLElement {
 
     attributeChangedCallback(name, oldValue, newValue) {
       this.render();
-   }
-
-    connectedCallback() {
-      this.render();
     }
 
     render() {

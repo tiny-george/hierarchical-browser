@@ -33,6 +33,10 @@
             }
             .folder {
                 background-color: yellow;
+                cursor: pointer;
+            }
+            tbody tr:hover {
+                background-color: #ffff99;
             }
         </style>
         <p>Showing items in path <span class="items-path"></span></p>
