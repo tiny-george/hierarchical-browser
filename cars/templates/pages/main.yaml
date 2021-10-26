@@ -1,0 +1,4 @@
+renderType: freemarker
+templateScript: /cars/templates/pages/main.ftl
+title: Main page
+visible: true

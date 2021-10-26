@@ -1,0 +1,28 @@
+= Magnolia hierarchical browser
+
+Magnolia light module with a web component to browse hierarchical content using delivery API.
+
+== Requisites
+
+Magnolia up, cars folder in light-modules, and allow anonymous user to read "Cars" workspace.
+
+== Content
+
+[source]
+----
+├── README.adoc
+└── cars
+    ├── apps
+    │   └── cars-app.yaml <-- Content app
+    ├── contentTypes
+    │   └── cars.yaml <-- Content type using "cars" workspace
+    ├── restEndpoints
+    │   └── delivery
+    │       └── cars.yaml <-- Delivery endpoint
+    ├── templates
+    │   └── pages
+    │       ├── main.ftl <-- Main page using web component
+    │       └── main.yaml <-- Page definition
+    └── webresources
+        └── hierarchical-browser.js <-- Web component and rest client code
+----

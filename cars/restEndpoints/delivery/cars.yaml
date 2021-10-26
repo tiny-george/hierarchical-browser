@@ -1,0 +1,8 @@
+class: info.magnolia.rest.delivery.jcr.v2.JcrDeliveryEndpointDefinition
+workspace: cars
+includeSystemProperties: true
+depth: 1
+rootPath: /
+nodeTypes:
+ - mgnl:folder
+ - mgnl:content

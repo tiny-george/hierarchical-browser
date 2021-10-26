@@ -1,0 +1,16 @@
+datasource:
+  workspace: cars
+  rootPath: /
+  autoCreate: true
+
+model:
+  properties:
+    - name: model
+    - name: electric
+      type: Boolean
+    - name: power
+      type: Decimal
+    - name: release_date
+      type: Date
+    - name: image
+      type: asset
