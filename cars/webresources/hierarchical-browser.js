@@ -1,30 +1,29 @@
-var getClient = function getClient(baseUrl, endpointName) {
+const getClient = (baseUrl, endpointName) => {
   return {
     baseUrl: baseUrl,
     endpointName: endpointName,
     getItems: function getItems(path) {
-      return clientFunctions.makeCall(this.baseUrl + "/.rest/delivery/" + endpointName + path + "@nodes").then(function (data) {
+      return clientFunctions.makeCall(this.baseUrl + '/.rest/delivery/' + endpointName + path + '@nodes').then(function (data) {
         return JSON.parse(data);
-      }).then(function (json) {
+      }).then((json) => {
         return json.map(jsonToItem);
       });
     }
   };
 };
 
-var jsonToItem = function jsonToItem(data) {
-  var map = new Map(Object.entries(data)).set('isFolder', data['@nodeType'] === "mgnl:folder");
-  map["delete"]('@nodes');
-  map["delete"]('@nodeType');
-  map["delete"]('@name');
+const jsonToItem = (data) => {
+  var map = new Map(Object.entries(data)).set('isFolder', data['@nodeType'] === 'mgnl:folder');
+  map['delete']('@nodes');
+  map['delete']('@nodeType');
   return map;
 };
 
-var makeCall = function makeCall(url) {
-  return new Promise(function (resolve, reject) {
+const makeCall = (url) => {
+  return new Promise((resolve, reject) => {
     var request = new XMLHttpRequest();
     request.open('GET', url);
-    request.onload = function () {
+    request.onload = () => {
       if (request.status === 200) {
         resolve(request.response);
       } else {
@@ -32,7 +31,7 @@ var makeCall = function makeCall(url) {
       }
     };
 
-    request.onerror = function () {
+    request.onerror = () => {
       reject(Error('There was a network error making call to ' + url));
     };
 
@@ -40,7 +39,7 @@ var makeCall = function makeCall(url) {
   });
 };
 
-var clientFunctions = {
+const clientFunctions = {
   makeCall: makeCall,
   getClient: getClient
 };
@@ -48,30 +47,29 @@ var clientFunctions = {
 export default class HierarchicalBrowser extends HTMLElement {
     constructor() {
         super();
-        this.baseUrl = this.getAttribute("baseUrl");
-        this.endpoint = this.getAttribute("endpoint");
-        const columns = this.getAttribute("columns");
+        this.baseUrl = this.getAttribute('baseUrl');
+        this.endpoint = this.getAttribute('endpoint');
+        const columns = this.getAttribute('columns');
         if (!columns) {
           this.columns = ["@path", "@name"];
         } else {
           this.columns = columns.split(","); 
         }
-        this.sh = this.attachShadow({mode: 'open'});
+        this.shadow = this.attachShadow({mode: 'open'});
         this.client = getClient(this.baseUrl, this.endpoint);
         this.loadItems('/');
     }
 
     loadItems(path) {
-      console.log("Go path ->" + path);
-      if (path != "/") {
+      if (path != '/') {
         let parent = path.substring(0, path.length - 1);
         const lastSlash = parent.lastIndexOf('/');
-        this.parent = lastSlash == 0 ? "/" : parent.substring(0, lastSlash);
+        this.parent = lastSlash == 0 ? '/' : parent.substring(0, lastSlash);
       } else {
         this.parent = null;
       }
       this.path = path;
-      this.state = "loading";
+      this.state = 'loading';
       this.client.getItems(path).then(result => {
         this.items = result;
         this.state = 'ready';
@@ -100,15 +98,15 @@ export default class HierarchicalBrowser extends HTMLElement {
     }
 
     render() {
-        this.sh.innerHTML = '';
-        if (this.getAttribute('state') == "loading") {
-            this.sh.appendChild(this.loading());
+        this.shadow.innerHTML = '';
+        if (this.getAttribute('state') == 'loading') {
+            this.shadow.appendChild(this.loading());
         }
-        if (this.getAttribute('state') == "ready") {
-          this.sh.appendChild(this.showItems());
+        if (this.getAttribute('state') == 'ready') {
+          this.shadow.appendChild(this.showItems());
         }
-        if (this.getAttribute('state') == "error") {
-            this.sh.innerHTML = '<p class="error">' + this.errorMessage || "Unknown Error" + '<p>';
+        if (this.getAttribute('state') == 'error') {
+            this.shadow.innerHTML = '<p class="error">' + this.errorMessage || 'Unknown Error' + '<p>';
         }
     }
 
@@ -130,9 +128,9 @@ export default class HierarchicalBrowser extends HTMLElement {
 
     getItemsHtml() {
       if (this.items.size < 1) {
-        return "<thead><tr><th>empty</th></tr></thead>"
+        return '<thead><tr><th>empty</th></tr></thead>';
       } else {
-        let result = "";
+        let result = '';
         if (this.parent != null) {
           result += '<thead><tr><td class="folder" folder="' + this.parent + '">Go to ' + this.parent + '</td></tr></thead>';
         }
@@ -142,30 +140,30 @@ export default class HierarchicalBrowser extends HTMLElement {
     }
 
     getItemsHeader(columns) {
-      let headers = "";
-      columns.forEach(column => headers += "<td>" + column + "</td>");
-      return "<thead><tr>" + headers + "</tr></thead>";
+      let headers = '';
+      columns.forEach(column => headers += '<td>' + column + '</td>');
+      return '<thead><tr>' + headers + '</tr></thead>';
     }
 
     getItemsBody(items, columns) {
-      let rows = "";
+      let rows = '';
       items.forEach(content => {
-        let row = "<tr>";
-        if (content.get("isFolder")) {
+        let row = '<tr>';
+        if (content.get('isFolder')) {
           row = '<tr class="folder" folder="' + content.get('@path') + '">'
         }
         columns.forEach(column => {
           const value = content.get(column);
           if (value == undefined) {
-            row = row + "<td></td>";
+            row = row + '<td></td>';
           } else {
-            row = row + "<td>" + content.get(column) + "</td>";
+            row = row + '<td>' + content.get(column) + '</td>';
           }
         });
-        row = row + "</tr>";
+        row = row + '</tr>';
         rows = rows + row;
       });
-      return "<tbody>" + rows + "</tbody>";     
+      return '<tbody>' + rows + '</tbody>';     
     }
 
     addFolderClickEvent(instance) {
@@ -173,15 +171,15 @@ export default class HierarchicalBrowser extends HTMLElement {
         const that = this;
         const elements = instance.querySelectorAll('.folder');
         elements.forEach(element => {
-          element.addEventListener('click', function(event) {
+          element.addEventListener('click', (event) => {
             event.preventDefault();
             let row = event.target;
-            while (row.getAttribute("folder") == undefined) {
+            while (row.getAttribute('folder') == undefined) {
               row = row.parentElement;
             }
-            let path = row.getAttribute("folder");
-            if (!path.endsWith("/")) {
-              path = path + "/";
+            let path = row.getAttribute('folder');
+            if (!path.endsWith('/')) {
+              path = path + '/';
             }
             that.loadItems(path);
           });
